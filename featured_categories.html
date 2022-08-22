@@ -1173,8 +1173,10 @@
 
 
     <script>
-        
+
         (async function () {
+            // const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
+            // const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`;
             const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
             const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`;
             let CURRENCY = "BDT";
@@ -1206,7 +1208,7 @@
 
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
-                    console.log("singleCatName", element);
+                    // console.log("singleCatName", element);
                     let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
@@ -1221,29 +1223,153 @@
             // get catagories all item
             async function showCatagoriesItem(CatagiresId) {
                 const LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                for (let i = 0; i < LoadCatagoriesItem?.length; i++) {
-                   /*  for (let i = 0; i < 5; i++) {
-                        skeletonDiv.remove(skeletonWrapper.content.cloneNode(true));
-                    }; */
+                for (let i = 0; i <= LoadCatagoriesItem?.length; i++) {
+                    /*  for (let i = 0; i < 5; i++) {
+                         skeletonDiv.remove(skeletonWrapper.content.cloneNode(true));
+                     }; */
+
                     const element = LoadCatagoriesItem[i];
                     console.log("element", element);
-                    const fc001_single_product = elementMaker("div",["fc001_single_product","fc001_card_shadow"]);
-                    const fc001_product_top = elementMaker("div",["fc001_product_top"]);
-                    const fc001_product_bottom = elementMaker("div",["fc001_product_bottom"]);
+                    let FeatureImage = `https://www.soppiya.com/media/images/${BUSINESS_ID}/item/${element?._id}/${element?.image}`;
+                    const fc001_single_product = elementMaker("div", ["fc001_single_product", "fc001_card_shadow"]);
+                    const fc001_product_top = elementMaker("div", ["fc001_product_top"]);
+                    const fc001_product_bottom = elementMaker("div", ["fc001_product_bottom"]);
                     fc001_single_product.appendChild(fc001_product_top);
                     fc001_single_product.appendChild(fc001_product_bottom);
+                    const fc001_item_overlay = elementMaker("div", ["fc001_item_overlay"]);
+                    fc001_product_top.appendChild(fc001_item_overlay);
+                    const fc001_product_img = elementMaker("div", ["fc001_product_img"]);
+                    let productImage = elementMaker("img");
+                    setAttributes(productImage, { "src": `${FeatureImage}` });
+                    fc001_product_img.appendChild(productImage);
+                    fc001_product_top.appendChild(fc001_product_img);
+                    const fc001_batch_wrapper = elementMaker("div", ["fc001_batch_wrapper", "fc001_batch_position_right"]);
+                    const fc001_batch_txt = elementMaker("div", ["fc001_batch_txt"]);
+                    if (element?.flashPrice) {
+                        fc001_batch_txt.innerText = `Sale`;
+                        fc001_batch_wrapper.appendChild(fc001_batch_txt);
+                        fc001_product_top.appendChild(fc001_batch_wrapper);
+                    };
+                    fc001_single_product.addEventListener("click", function () {
+                        console.log(element.slug);
+                        typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
+                    })
+                    // wishlist element
+                    const fc001_icon_group = elementMaker("div", ["fc001_icon_group"]);
+                    fc001_product_top.appendChild(fc001_icon_group);
+                    const fc001_icon_group_wrapper = elementMaker("div", ["fc001_icon_group_wrapper"]);
+                    fc001_icon_group.appendChild(fc001_icon_group_wrapper);
+                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"]);
+                    fc001_icon_group_wrapper.appendChild(fc001_wishlist_icon_wrapper);
+                    let fc001_tooltip = elementMaker("div", ["fc001_tooltip"]);
+                    fc001_wishlist_icon_wrapper.appendChild(fc001_tooltip);
+                    let fc001_tooltip_txt_wrapper = elementMaker("div", ["fc001_tooltip_txt_wrapper"]);
+                    fc001_tooltip.appendChild(fc001_tooltip_txt_wrapper);
+                    let fc001_tooltip_txt = elementMaker("p", ["fc001_tooltip_txt"]);
+                    fc001_tooltip_txt.innerText = `Add to Wishlist`;
+                    fc001_tooltip_txt_wrapper.appendChild(fc001_tooltip_txt);
+                    const fc001_icon = elementMaker("div", ["fc001_icon", "fc001_wishlist_icon"]);
+                    fc001_icon.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="11.505"
+                                                        height="10.995" viewBox="0 0 11.505 10.995">
+                                                        <path id="heart"
+                                                            d="M7.286.917A2.666,2.666,0,0,0,5,2.291,2.666,2.666,0,0,0,2.7.917,2.832,2.832,0,0,0,0,3.853C0,6.675,4.56,9.934,4.754,10.072l.241.17.241-.17c.194-.137,4.757-3.4,4.757-6.219A2.832,2.832,0,0,0,7.286.917Z"
+                                                            transform="translate(0.757 -0.167)" fill="#1e272e"
+                                                            stroke="#1e272e" stroke-width="1.5" />
+                                                    </svg>`;
+
+
+                    if (element?.hasVariations == false) {
+                        fc001_wishlist_icon_wrapper.appendChild(fc001_icon);
+                    }
+
+                    // cart element
+                    const fc001_cart_view_icon_group = elementMaker("div", ["fc001_cart_view_icon_group"]);
+                    fc001_icon_group_wrapper.appendChild(fc001_cart_view_icon_group);
+                    const fc001_cart_icon_wrapper = elementMaker("div", ["fc001_cart_icon_wrapper"]);
+                    fc001_cart_view_icon_group.appendChild(fc001_cart_icon_wrapper);
+                    const cartToltipWrapper = elementMaker("div", ["fc001_tooltip"]);
+                    fc001_cart_icon_wrapper.appendChild(cartToltipWrapper);
+                    const cart_fc001_tooltip_txt_wrapper = elementMaker("div",["fc001_tooltip_txt_wrapper"]);
+                    cartToltipWrapper.appendChild(cart_fc001_tooltip_txt_wrapper);
+                    const cartToltipText = elementMaker("p", ["fc001_tooltip_txt"]);
+                    cartToltipText.innerText = `Add to Cart`;
+                    cart_fc001_tooltip_txt_wrapper.appendChild(cartToltipText);
+
+                    const fc001_iconCart = elementMaker("div", ["fc001_icon", "fc001_cart_icon"]);
+                    fc001_iconCart.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                            viewBox="0 0 14 14">
+                                                            <path id="shopping-bag_1_" data-name="shopping-bag (1)"
+                                                                d="M10.5,3.5a3.5,3.5,0,1,0-7,0H0v8.75A1.75,1.75,0,0,0,1.75,14h10.5A1.75,1.75,0,0,0,14,12.25V3.5ZM7,1.167A2.333,2.333,0,0,1,9.333,3.5H4.667A2.333,2.333,0,0,1,7,1.167Z"
+                                                                fill="#1e272e" />
+                                                        </svg>
+                    `;
+
+                    if (element?.hasVariations == false) {
+                        fc001_cart_icon_wrapper.appendChild(fc001_iconCart);
+                    }
+                    // view details element
+                    const fc001_view_details_icon_wrapper = elementMaker("div", ["fc001_view_details_icon_wrapper"]);
+                    fc001_cart_view_icon_group.appendChild(fc001_view_details_icon_wrapper);
+
+                    const viewMoreToltipWrapper = elementMaker("div", ["fc001_tooltip"]);
+                    fc001_view_details_icon_wrapper.appendChild(viewMoreToltipWrapper);
+                    const viewMoreToltiptextWrapper = elementMaker("div", ["fc001_tooltip_txt_wrapper"]);
+                    viewMoreToltipWrapper.appendChild(viewMoreToltiptextWrapper);
+                    const viewMoreToltiptext = elementMaker("p", ["fc001_tooltip_txt"]);
+                    viewMoreToltiptext.innerText = `View Details`;
+                    viewMoreToltiptextWrapper.appendChild(viewMoreToltiptext)
+                    const fc001_view_details_icon = elementMaker("div", ["fc001_icon", "fc001_view_details_icon"]);
+                    fc001_view_details_icon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12.2"
+                                                            height="12.2" viewBox="0 0 12.2 12.2">
+                                                            <path id="info_1_" data-name="info (1)"
+                                                                d="M12,6A6,6,0,1,1,6,0,6,6,0,0,1,12,6ZM7,6A1,1,0,0,0,6,5H5V6H6V9.5H7ZM6,2.5a.75.75,0,1,0,.75.75A.75.75,0,0,0,6,2.5Z"
+                                                                transform="translate(0.1 0.1)" stroke="#fff"
+                                                                stroke-width="0.2" />
+                                                        </svg>
+                     `;
+                    if (element?.hasVariations == true) {
+                        fc001_view_details_icon_wrapper.appendChild(fc001_view_details_icon);
+                        fc001_view_details_icon.addEventListener("click", function () {
+                            console.log("slug", element.slug);
+                            typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
+                        });
+                    };
+
+                    // product bottom content
+                    const fc001_product_content = elementMaker("div", ["fc001_product_content", "fc001_product_content_center"]);
+                    fc001_product_bottom.appendChild(fc001_product_content);
+                    const fc001_product_name_wrapper = elementMaker("div", ["fc001_product_name_wrapper"]);
+                    fc001_product_content.appendChild(fc001_product_name_wrapper);
+                    const fc001_product_name = elementMaker("p", ["fc001_product_name"]);
+                    fc001_product_name.innerText = `${element?.name}`;
+                    fc001_product_name_wrapper.appendChild(fc001_product_name);
+                    const fc001_product_price_wrapper = elementMaker("div", ["fc001_product_price_wrapper"]);
+                    fc001_product_content.appendChild(fc001_product_price_wrapper);
+                    const fc001_product_price_regular = elementMaker("span", ["fc001_product_price", "fc001_product_regular_price"]);
+                    fc001_product_price_regular.innerText = ` ${CURRENCY} ${element?.price}`;
+                    fc001_product_price_wrapper.appendChild(fc001_product_price_regular);
+                    const fc001_product_old_price = elementMaker("span", ["fc001_product_old_price", "fc001_product_price"]);
+                    // fc001_product_old_price.innerText = `${CURRENCY} 1500`;
+                    fc001_product_old_price.innerText = `${CURRENCY} ${element?.flashPrice}`;
+                    if (element?.flashPrice) {
+                        fc001_product_price_wrapper.appendChild(fc001_product_old_price);
+                    }
+
+                    
 
 
 
 
+
+
+
+
+                    fc001_featured_catagories_all_product_id.appendChild(fc001_single_product);
                 }
             };
             await showCatagoriesItem();
-
-
-
-
-
 
             function elementMaker(name, className, id) {
                 try {
