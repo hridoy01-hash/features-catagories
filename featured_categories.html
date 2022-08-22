@@ -1099,8 +1099,9 @@
 
                                 </div>
                                 <div class="fc001_product_bottom">
-                                    <div class="fc001_product_content fc001_product_content_center">
-                                        <div class="fc001_product_review_area">
+                                    <div class="fc001_product_content fc001_product_content_center"
+                                        id="fc001_product_content_id">
+                                        <div class="fc001_product_review_area" id="fc001_product_review_area_id">
                                             <span class="fc001_review_star">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
                                                     viewBox="0 0 11 11">
@@ -1289,7 +1290,7 @@
                     fc001_cart_view_icon_group.appendChild(fc001_cart_icon_wrapper);
                     const cartToltipWrapper = elementMaker("div", ["fc001_tooltip"]);
                     fc001_cart_icon_wrapper.appendChild(cartToltipWrapper);
-                    const cart_fc001_tooltip_txt_wrapper = elementMaker("div",["fc001_tooltip_txt_wrapper"]);
+                    const cart_fc001_tooltip_txt_wrapper = elementMaker("div", ["fc001_tooltip_txt_wrapper"]);
                     cartToltipWrapper.appendChild(cart_fc001_tooltip_txt_wrapper);
                     const cartToltipText = elementMaker("p", ["fc001_tooltip_txt"]);
                     cartToltipText.innerText = `Add to Cart`;
@@ -1345,6 +1346,11 @@
                     const fc001_product_name = elementMaker("p", ["fc001_product_name"]);
                     fc001_product_name.innerText = `${element?.name}`;
                     fc001_product_name_wrapper.appendChild(fc001_product_name);
+                    const fc001_product_variant = elementMaker("div", ["fc001_product_variant"]);
+                    fc001_product_content.appendChild(fc001_product_variant);
+                    const fc001_product_variant_txt = elementMaker("span", ["fc001_product_variant_txt"]);
+                    fc001_product_variant_txt.innerText = `Black,Metal`;
+                    fc001_product_variant.appendChild(fc001_product_variant_txt);
                     const fc001_product_price_wrapper = elementMaker("div", ["fc001_product_price_wrapper"]);
                     fc001_product_content.appendChild(fc001_product_price_wrapper);
                     const fc001_product_price_regular = elementMaker("span", ["fc001_product_price", "fc001_product_regular_price"]);
@@ -1357,7 +1363,34 @@
                         fc001_product_price_wrapper.appendChild(fc001_product_old_price);
                     }
 
-                    
+
+                    // product review display
+                    /*  const reviewParentElement = document.getElementById("fc001_product_review_area_id");
+                     const ratingNumber = element?.reviewRating?.rating;
+                     function showReviewStar(ratingNumber, reviewParentElement) {
+                         let stars = ratingNumber;
+                         let starsFloor = Math.floor(stars);
+                         console.log("starsFloor", starsFloor);
+                         for (let i = 0; i < starsFloor; i++) {
+                             let fc001_review_star = elementMaker("span", ["fc001_review_star"]);
+                             fc001_review_star.innerHTML = `
+                             <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
+                                                     viewBox="0 0 11 11">
+                                                     <path id="Star"
+                                                         d="M59.5,72.843,62.9,75,62,70.93l3-2.736-3.955-.357L59.5,64l-1.545,3.837L54,68.194l3,2.736L56.1,75Z"
+                                                         transform="translate(-54 -64)" fill="#fed300" />
+                                                 </svg>
+                             `
+                             document.getElementById(reviewParentElement).appendChild(fc001_review_star);
+ 
+                         };
+                         document.getElementById("fc001_product_content_id").appendChild(reviewParentElement);
+                     }
+ 
+                     showReviewStar(ratingNumber, reviewParentElement); */
+
+
+
 
 
 
