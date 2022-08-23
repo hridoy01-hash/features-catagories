@@ -80,15 +80,21 @@
         }
 
         .fc001_featured_heading_between {
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
         }
 
         .fc001_featured_heading_center {
             flex-direction: column;
             align-items: center;
             gap: 20px;
+        }
+
+        .fc001_featured_heading_reverse {
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .fc001_section_title {
@@ -461,6 +467,9 @@
 
         .fc001_product_content_left {
             align-items: flex-start;
+        }
+        .fc001_product_content_right {
+            align-items: flex-end;
         }
 
         .fc001_product_content_center {
@@ -970,7 +979,7 @@
         <div class="fc001_bg_overlay"></div>
         <div class="fc001_container">
             <div class="fc001_featured_category_area">
-                <div class="fc001_featured_heading fc001_featured_heading_center">
+                <div class="fc001_featured_heading" id="fc001_featured_heading_id">
                     <div class="fc001_section_title_wrapper fc001_title_align_center">
                         <p class="fc001_section_title"></p>
                     </div>
@@ -985,8 +994,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="fc001_featured_category_items fc001_tab_content_grid
-                ">
+                <div class="fc001_featured_category_items fc001_tab_content_grid">
                     <div class="fc001_controller">
                         <div class="fc001_prev_btn_wrapper fc001_controller_btn_wrapper">
                             <span class="fc001_prev_btn fc001_controller_btn">
@@ -1024,7 +1032,7 @@
                     <div class="fc001_featured_all_items">
                         <div class="fc001_tab_content" id="fc001_featured_catagories_all_product_id">
                             <!-- fc001_single_product -->
-                            <div class="fc001_single_product fc001_card_shadow">
+                            <!-- <div class="fc001_single_product fc001_card_shadow">
                                 <div class="fc001_product_top">
                                     <div class="fc001_item_overlay"></div>
                                     <div class="fc001_product_img">
@@ -1159,7 +1167,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -1176,16 +1184,23 @@
     <script>
 
         (async function () {
-            // const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
-            // const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`;
-            const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
-            const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`;
+            const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
+            const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`;
+            /* const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
+            const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`; */
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
             const skeletonWrapper = document.getElementById("fc001_skeleton_template_wrapper");
             const fc001_section_title = document.querySelector(".fc001_section_title");
             const fc001_tab_btn_group_id = document.getElementById('fc001_tab_btn_group_id');
+            const productBottomAlignmentLeft = `fc001_product_content_left`;
+            const productBottomAlignmentCenter = `fc001_product_content_center`;
+            const productBottomAlignmentRight = `fc001_product_content_right`;
+            const sectionTitleCenter = `fc001_featured_heading_center`;
+            const sectionTitleBetween = `fc001_featured_heading_between`;
+            const sectionTitleReverse = `fc001_featured_heading_reverse`;
+
 
             /* for (let i = 0; i < 5; i++) {
                 skeletonDiv.append(skeletonWrapper.content.cloneNode(true));
@@ -1201,20 +1216,26 @@
             };
             await displayFeatureTitle(fetauredCatagoriesTitle);
 
-            // show catagories btn
+            function sectionTitleAlignment() {
+                document.getElementById("fc001_featured_heading_id").classList.add(`${sectionTitleBetween}`);
+            }
+            sectionTitleAlignment();
 
+            // show catagories btn
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
-
+                // console.log("getCatagoriesName", getCatagoriesName[0]._id);
+                const firstId = getCatagoriesName[0]._id;
+                await showCatagoriesItem(firstId);
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
                     // console.log("singleCatName", element);
                     let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
+                    let CatagiresId = element._id;
                     catagoriesTabButton.addEventListener("click", async function () {
-                        let CatagiresId = element._id;
                         await showCatagoriesItem(CatagiresId);
                     });
                 }
@@ -1230,7 +1251,7 @@
                      }; */
 
                     const element = LoadCatagoriesItem[i];
-                    console.log("element", element);
+                    // console.log("element", element);
                     let FeatureImage = `https://www.soppiya.com/media/images/${BUSINESS_ID}/item/${element?._id}/${element?.image}`;
                     const fc001_single_product = elementMaker("div", ["fc001_single_product", "fc001_card_shadow"]);
                     const fc001_product_top = elementMaker("div", ["fc001_product_top"]);
@@ -1339,7 +1360,8 @@
                     };
 
                     // product bottom content
-                    const fc001_product_content = elementMaker("div", ["fc001_product_content", "fc001_product_content_center"]);
+                    // const fc001_product_content = elementMaker("div", ["fc001_product_content", "fc001_product_content_center"]);
+                    const fc001_product_content = elementMaker("div", ["fc001_product_content", `${productBottomAlignmentLeft}`]);
                     fc001_product_bottom.appendChild(fc001_product_content);
                     const fc001_product_name_wrapper = elementMaker("div", ["fc001_product_name_wrapper"]);
                     fc001_product_content.appendChild(fc001_product_name_wrapper);
@@ -1365,39 +1387,44 @@
 
 
                     // product review display
-                    /*  const reviewParentElement = document.getElementById("fc001_product_review_area_id");
-                     const ratingNumber = element?.reviewRating?.rating;
-                     function showReviewStar(ratingNumber, reviewParentElement) {
-                         let stars = ratingNumber;
-                         let starsFloor = Math.floor(stars);
-                         console.log("starsFloor", starsFloor);
-                         for (let i = 0; i < starsFloor; i++) {
-                             let fc001_review_star = elementMaker("span", ["fc001_review_star"]);
-                             fc001_review_star.innerHTML = `
-                             <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-                                                     viewBox="0 0 11 11">
-                                                     <path id="Star"
-                                                         d="M59.5,72.843,62.9,75,62,70.93l3-2.736-3.955-.357L59.5,64l-1.545,3.837L54,68.194l3,2.736L56.1,75Z"
-                                                         transform="translate(-54 -64)" fill="#fed300" />
-                                                 </svg>
+                    const reviewParentElement = elementMaker("div", ["fc001_product_review_area"]);
+                    const ratingNumber = element?.reviewRating?.rating;
+                    function showReviewStar(ratingNumber, reviewParentElement) {
+                        let stars = ratingNumber;
+                        let starsFloor = Math.floor(stars);
+                        // console.log("starsFloor", starsFloor);
+                        for (let i = 0; i < starsFloor; i++) {
+                            let fc001_review_star = elementMaker("span", ["fc001_review_star"]);
+                            fc001_review_star.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11"> <path id="Star" d="M59.5,72.843,62.9,75,62,70.93l3-2.736-3.955-.357L59.5,64l-1.545,3.837L54,68.194l3,2.736L56.1,75Z" transform="translate(-54 -64)" fill="#fed300"></path> </svg>
                              `
-                             document.getElementById(reviewParentElement).appendChild(fc001_review_star);
- 
-                         };
-                         document.getElementById("fc001_product_content_id").appendChild(reviewParentElement);
-                     }
- 
-                     showReviewStar(ratingNumber, reviewParentElement); */
 
+                            reviewParentElement.appendChild(fc001_review_star);
 
+                        };
+                        let starDecimal = stars - starsFloor;
+                        if (starDecimal > 0) {
+                            let fc001_review_star = elementMaker("span", ["fc001_review_star"]);
+                            fc001_review_star.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="11" height="11" viewBox="0 0 11 11"> <defs> <linearGradient id="linear-gradient" y1="0.384" x2="1" y2="0.381" gradientUnits="objectBoundingBox"> <stop offset="0" stop-color="#fed300"></stop> <stop offset="0.5" stop-color="#fbd414"></stop> <stop offset="0.503" stop-color="#dedbcc"></stop> <stop offset="1" stop-color="#dcdcdc"></stop> </linearGradient> </defs> <path id="Star" d="M59.5,72.843,62.9,75,62,70.93l3-2.736-3.955-.357L59.5,64l-1.545,3.837L54,68.194l3,2.736L56.1,75Z" transform="translate(-54 -64)" fill="url(#linear-gradient)"></path> </svg>
+                                        `;
+                            reviewParentElement.appendChild(fc001_review_star);
+                        };
+                        if ((5 - stars) > 0) {
+                            for (let i = 0; i < Math.floor((5 - stars)); i++) {
+                                let fc001_review_star = elementMaker("span", ["fc001_review_star"]);
+                                fc001_review_star.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11"> <path id="Star" d="M59.5,72.843,62.9,75,62,70.93l3-2.736-3.955-.357L59.5,64l-1.545,3.837L54,68.194l3,2.736L56.1,75Z" transform="translate(-54 -64)" fill="#dfdfdf"></path> </svg>
+                                        `;
+                                reviewParentElement.appendChild(fc001_review_star);
+                            };
+                        };
 
-
-
-
-
-
-
-
+                        // document.getElementById("fc001_product_content_id").appendChild(reviewParentElement);
+                        fc001_product_content.appendChild(reviewParentElement);
+                    }
+                    showReviewStar(ratingNumber, reviewParentElement);
+                    fc001_product_content.appendChild(reviewParentElement);
 
                     fc001_featured_catagories_all_product_id.appendChild(fc001_single_product);
                 }
