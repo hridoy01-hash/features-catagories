@@ -1186,10 +1186,8 @@
     <script>
 
         (async function () {
-            /* const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
-            const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`; */
-            const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
-            const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`;
+            const BUSINESS_ID = "6304aa113cb8eba9248eac8d";
+            const Catagories = `6304abf87c41d3abab7e2271,6304ac0b7c41d3abab7e2286,6304acb21b2dd5af60940b54`;
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
@@ -1292,7 +1290,7 @@
                     fc001_product_top.appendChild(fc001_icon_group);
                     const fc001_icon_group_wrapper = elementMaker("div", ["fc001_icon_group_wrapper"]);
                     fc001_icon_group.appendChild(fc001_icon_group_wrapper);
-                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"],`fc001_wishlist_icon_wrapper_id_${element.selectorId}`);
+                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"]);
                     fc001_icon_group_wrapper.appendChild(fc001_wishlist_icon_wrapper);
                     let fc001_tooltip = elementMaker("div", ["fc001_tooltip"]);
                     fc001_wishlist_icon_wrapper.appendChild(fc001_tooltip);
@@ -1316,7 +1314,7 @@
                     }
 
                     // add or remove wishlist fc001_active_icon
-                    fc001_wishlist_icon_wrapper.addEventListener("click", function () {
+                    /* fc001_wishlist_icon_wrapper.addEventListener("click", function () {
                         event.stopPropagation();
                         if (document.getElementById(`s0404_wishlist_icon_wrapper_id_${element.selectorId}`).children[0].classList.contains("s0404_active_wishlist_icon")) {
                             let productRemovedFronWishlist = typeof handleWishlistAction === "function" && await handleWishlistAction("delete", {
@@ -1331,7 +1329,7 @@
                         };
 
 
-                    });
+                    }); */
 
 
                     // cart element
