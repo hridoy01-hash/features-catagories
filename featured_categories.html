@@ -330,6 +330,7 @@
             transition: .5s ease;
             position: relative;
             z-index: 1;
+            cursor: pointer;
         }
 
         .fc001_icon svg {
@@ -468,6 +469,7 @@
         .fc001_product_content_left {
             align-items: flex-start;
         }
+
         .fc001_product_content_right {
             align-items: flex-end;
         }
@@ -994,9 +996,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="fc001_featured_category_items fc001_tab_content_grid">
+                <div class="fc001_featured_category_items" id="fc001_featured_category_items_id">
                     <div class="fc001_controller">
-                        <div class="fc001_prev_btn_wrapper fc001_controller_btn_wrapper">
+                        <div class="fc001_prev_btn_wrapper fc001_controller_btn_wrapper" id="fc001_prev_btn_wrapper_id">
                             <span class="fc001_prev_btn fc001_controller_btn">
                                 <div class="fc001_controller_circle"></div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="6" height="12.156"
@@ -1012,7 +1014,7 @@
                                 </svg>
                             </span>
                         </div>
-                        <div class="fc001_next_btn_wrapper fc001_controller_btn_wrapper">
+                        <div class="fc001_next_btn_wrapper fc001_controller_btn_wrapper" id="fc001_next_btn_wrapper_id">
                             <span class="fc001_next_btn fc001_controller_btn">
                                 <div class="fc001_controller_circle"></div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="6" height="12.156"
@@ -1184,10 +1186,10 @@
     <script>
 
         (async function () {
-            const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
-            const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`;
-            /* const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
-            const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`; */
+            /* const BUSINESS_ID = "61a749c95eb0a0d5225e4572";
+            const Catagories = `61a74ae85eb0a0d5225e4772,61fa2f27420d9140af2dc756,61fa3cc29e43e432a03a612a`; */
+            const BUSINESS_ID = "62024b7c0d36dfc17e75e2bd";
+            const Catagories = `6209e9e8f72ae6c6b7815a5c,620a0069d8c98ceb274d3d57`;
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
@@ -1200,6 +1202,9 @@
             const sectionTitleCenter = `fc001_featured_heading_center`;
             const sectionTitleBetween = `fc001_featured_heading_between`;
             const sectionTitleReverse = `fc001_featured_heading_reverse`;
+            const showCatagoriesItemSlide = `fc001_tab_content_slide`;
+            const showCatagoriesItemGrid = `fc001_tab_content_grid`;
+
 
 
             /* for (let i = 0; i < 5; i++) {
@@ -1216,16 +1221,22 @@
             };
             await displayFeatureTitle(fetauredCatagoriesTitle);
 
+            // section title alignment
             function sectionTitleAlignment() {
                 document.getElementById("fc001_featured_heading_id").classList.add(`${sectionTitleBetween}`);
             }
             sectionTitleAlignment();
+            // show catagories item grid or slide
+            function showCatagoriesItemStyle() {
+                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemSlide}`);
+            }
+            showCatagoriesItemStyle();
 
             // show catagories btn
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
-                // console.log("getCatagoriesName", getCatagoriesName[0]._id);
+                console.log("getCatagoriesName", getCatagoriesName[0]._id);
                 const firstId = getCatagoriesName[0]._id;
                 await showCatagoriesItem(firstId);
                 for (let i = 0; i < getCatagoriesName.length; i++) {
@@ -1281,7 +1292,7 @@
                     fc001_product_top.appendChild(fc001_icon_group);
                     const fc001_icon_group_wrapper = elementMaker("div", ["fc001_icon_group_wrapper"]);
                     fc001_icon_group.appendChild(fc001_icon_group_wrapper);
-                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"]);
+                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"],`fc001_wishlist_icon_wrapper_id_${element.selectorId}`);
                     fc001_icon_group_wrapper.appendChild(fc001_wishlist_icon_wrapper);
                     let fc001_tooltip = elementMaker("div", ["fc001_tooltip"]);
                     fc001_wishlist_icon_wrapper.appendChild(fc001_tooltip);
@@ -1303,6 +1314,25 @@
                     if (element?.hasVariations == false) {
                         fc001_wishlist_icon_wrapper.appendChild(fc001_icon);
                     }
+
+                    // add or remove wishlist fc001_active_icon
+                    fc001_wishlist_icon_wrapper.addEventListener("click", function () {
+                        event.stopPropagation();
+                        if (document.getElementById(`s0404_wishlist_icon_wrapper_id_${element.selectorId}`).children[0].classList.contains("s0404_active_wishlist_icon")) {
+                            let productRemovedFronWishlist = typeof handleWishlistAction === "function" && await handleWishlistAction("delete", {
+                                type: "item",
+                                entityId: element.itemId,
+                                selectorId: element.selectorId,
+                                quantity: 1
+                            });
+                            if (productRemovedFronWishlist.status === true) {
+                                document.getElementById(`s0404_wishlist_icon_wrapper_id_${element.selectorId}`).children[0].classList.remove("s0404_active_wishlist_icon");
+                            };
+                        };
+
+
+                    });
+
 
                     // cart element
                     const fc001_cart_view_icon_group = elementMaker("div", ["fc001_cart_view_icon_group"]);
@@ -1430,6 +1460,24 @@
                 }
             };
             await showCatagoriesItem();
+
+            // hnadle slide controler
+            /* let sinleProductParentDiv = document.querySelectorAll(".fc001_featured_all_items");
+            console.log("sinleProductParentDiv", sinleProductParentDiv);
+            function handleSlideControler() {
+                document.getElementById("fc001_next_btn_wrapper_id").addEventListener("click", function () {
+
+
+                });
+            };
+            handleSlideControler(); */
+
+
+
+
+
+
+
 
             function elementMaker(name, className, id) {
                 try {
