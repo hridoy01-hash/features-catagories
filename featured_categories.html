@@ -413,15 +413,19 @@
         }
 
 
-        .fc001_product_top:hover .fc001_item_action {
+        /* .fc001_product_top:hover .fc001_item_action {
             transform: translateX(-50%);
-        }
+        } */
+
+
+
 
 
 
         .fc001_item_action_show {
             visibility: visible;
             opacity: 1;
+            transform: translateX(-50%);
         }
 
         .fc001_item_action_content {
@@ -1187,7 +1191,7 @@
 
         (async function () {
             const BUSINESS_ID = "6304aa113cb8eba9248eac8d";
-            const Catagories = `6304abf87c41d3abab7e2271,6304ac0b7c41d3abab7e2286,6304acb21b2dd5af60940b54`;
+            const Catagories = `6304ac0b7c41d3abab7e2286,6304abf87c41d3abab7e2271,6304acb21b2dd5af60940b54`;
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
@@ -1234,13 +1238,12 @@
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
-                console.log("getCatagoriesName", getCatagoriesName[0]._id);
                 const firstId = getCatagoriesName[0]._id;
                 await showCatagoriesItem(firstId);
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
                     // console.log("singleCatName", element);
-                    let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
+                    let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn", "fc001_active_category"]);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
                     let CatagiresId = element._id;
@@ -1260,7 +1263,7 @@
                      }; */
 
                     const element = LoadCatagoriesItem[i];
-                    // console.log("element", element);
+                    // console.log("element", element._id);
                     let FeatureImage = `https://www.soppiya.com/media/images/${BUSINESS_ID}/item/${element?._id}/${element?.image}`;
                     const fc001_single_product = elementMaker("div", ["fc001_single_product", "fc001_card_shadow"]);
                     const fc001_product_top = elementMaker("div", ["fc001_product_top"]);
@@ -1282,7 +1285,7 @@
                         fc001_product_top.appendChild(fc001_batch_wrapper);
                     };
                     fc001_single_product.addEventListener("click", function () {
-                        console.log(element.slug);
+                        // console.log(element.slug);
                         typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
                     })
                     // wishlist element
@@ -1290,7 +1293,7 @@
                     fc001_product_top.appendChild(fc001_icon_group);
                     const fc001_icon_group_wrapper = elementMaker("div", ["fc001_icon_group_wrapper"]);
                     fc001_icon_group.appendChild(fc001_icon_group_wrapper);
-                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"]);
+                    const fc001_wishlist_icon_wrapper = elementMaker("div", ["fc001_wishlist_icon_wrapper"], `fc001_wishlist_icon_wrapper_id_${element?._id}`);
                     fc001_icon_group_wrapper.appendChild(fc001_wishlist_icon_wrapper);
                     let fc001_tooltip = elementMaker("div", ["fc001_tooltip"]);
                     fc001_wishlist_icon_wrapper.appendChild(fc001_tooltip);
@@ -1313,23 +1316,58 @@
                         fc001_wishlist_icon_wrapper.appendChild(fc001_icon);
                     }
 
-                    // add or remove wishlist fc001_active_icon
-                    /* fc001_wishlist_icon_wrapper.addEventListener("click", function () {
+                    // add or remove wishlist 
+                    const fc001_item_action = elementMaker("div", ["fc001_item_action"]);
+                    fc001_product_top.appendChild(fc001_item_action);
+                    const fc001_item_action_content = elementMaker("div", ["fc001_item_action_content"]);
+                    fc001_item_action.appendChild(fc001_item_action_content);
+                    const fc001_item_action_txt = elementMaker("span", ["fc001_item_action_txt"]);
+                    fc001_item_action_txt.innerText = `Remove suceessfully`;
+                    fc001_item_action_content.appendChild(fc001_item_action_txt);
+
+
+                    fc001_wishlist_icon_wrapper.addEventListener("click", async function () {
                         event.stopPropagation();
-                        if (document.getElementById(`s0404_wishlist_icon_wrapper_id_${element.selectorId}`).children[0].classList.contains("s0404_active_wishlist_icon")) {
+                        console.log("wishlist Click");
+
+                        if (document.getElementById(`fc001_wishlist_icon_wrapper_id_${element._id}`).children[1].classList.contains("fc001_active_icon")) {
+                            // console.log("true");
                             let productRemovedFronWishlist = typeof handleWishlistAction === "function" && await handleWishlistAction("delete", {
                                 type: "item",
-                                entityId: element.itemId,
-                                selectorId: element.selectorId,
+                                Id: element._id,
                                 quantity: 1
                             });
                             if (productRemovedFronWishlist.status === true) {
-                                document.getElementById(`s0404_wishlist_icon_wrapper_id_${element.selectorId}`).children[0].classList.remove("s0404_active_wishlist_icon");
+                                document.getElementById(`fc001_wishlist_icon_wrapper_id_${element._id}`).children[1].classList.remove("fc001_active_icon");
+                                fc001_tooltip_txt.innerText = `Add to Wishlist`;
+                                setTimeout(() => {
+                                    fc001_item_action.classList.add("fc001_item_action_show");
+                                    console.log("added succesfull");
+                                }, "100");
                             };
+
                         };
 
 
-                    }); */
+                        if (!document.getElementById(`fc001_wishlist_icon_wrapper_id_${element._id}`).children[1].classList.contains("fc001_active_icon")) {
+                            let productRemovedFronWishlist = typeof handleWishlistAction === "function" && await handleWishlistAction("add", {
+                                type: "item",
+                                Id: element._id,
+                                quantity: 1
+                            });
+                            if (productRemovedFronWishlist.status === true) {
+                                document.getElementById(`fc001_wishlist_icon_wrapper_id_${element._id}`).children[1].classList.add("fc001_active_icon");
+                                fc001_tooltip_txt.innerText = `Remove from Wishlist`;
+                                setTimeout(() => {
+                                    fc001_item_action_txt.innerText = `Add suceessfully`;
+                                    fc001_item_action.classList.add("fc001_item_action_show");
+                                    console.log("remove succesfull");
+                                }, "100");
+                            };
+
+                        };
+
+                    });
 
 
                     // cart element
@@ -1357,7 +1395,15 @@
 
                     if (element?.hasVariations == false) {
                         fc001_cart_icon_wrapper.appendChild(fc001_iconCart);
-                    }
+                    };
+
+                    // add or remove wishlist fc001_active_icon
+                    fc001_cart_icon_wrapper.addEventListener("click", async function () {
+                        console.log("Cart Clicked");
+
+
+                    });
+
                     // view details element
                     const fc001_view_details_icon_wrapper = elementMaker("div", ["fc001_view_details_icon_wrapper"]);
                     fc001_cart_view_icon_group.appendChild(fc001_view_details_icon_wrapper);
