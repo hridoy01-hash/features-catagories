@@ -174,11 +174,13 @@
 
         .fc001_tab_content {
             display: flex;
+            justify-content: left;
             gap: 20px;
             overflow-x: hidden;
             padding: 20px 2px;
             min-width: 100%;
             transition: .3s;
+            transform: translateX(0);
         }
 
         .fc001_tab_content::-webkit-scrollbar {
@@ -1179,7 +1181,7 @@
                 </div>
 
                 <!-- fc001_featured_item_btn_wrapper -->
-                <div class="fc001_featured_item_btn_wrapper">
+                <div class="fc001_featured_item_btn_wrapper" id="fc001_featured_item_btn_wrapper_id">
                     <button type="button" class="fc001_featured_item_btn fc001_common_btn">View All</button>
                 </div>
             </div>
@@ -1187,7 +1189,7 @@
     </section>
 
 
-    <script>
+    <script type="text/javascript">
 
         (async function () {
             const BUSINESS_ID = "6304aa113cb8eba9248eac8d";
@@ -1230,7 +1232,7 @@
             sectionTitleAlignment();
             // show catagories item grid or slide
             function showCatagoriesItemStyle() {
-                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemSlide}`);
+                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemGrid}`);
             }
             showCatagoriesItemStyle();
 
@@ -1326,6 +1328,23 @@
                     fc001_item_action_content.appendChild(fc001_item_action_txt);
 
 
+                    /*  (async function checkWishlist() {
+                         let wishlistData;
+                         wishlistData = typeof getWishlist === "function" && await getWishlist();
+ 
+                         for (i = 0; i <= wishlistData?.length; i++) {
+                             let data = wishlistData[i];
+                             if (data.entityId === element._id && data.selectorId === element._id) {
+                                 fc001_wishlist_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             } else if (data.entityId === element._id && data.selectorId == "") {
+                                 fc001_wishlist_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             } else if (data.entityId === element._id) {
+                                 fc001_wishlist_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             };
+                         }
+                     })(); */
+
+
                     fc001_wishlist_icon_wrapper.addEventListener("click", async function () {
                         event.stopPropagation();
                         console.log("wishlist Click");
@@ -1339,6 +1358,7 @@
                             });
                             if (productRemovedFronWishlist.status === true) {
                                 document.getElementById(`fc001_wishlist_icon_wrapper_id_${element._id}`).children[1].classList.remove("fc001_active_icon");
+                                fc001_item_action_txt.innerText = ` Remove Successfull`;
                                 fc001_tooltip_txt.innerText = `Add to Wishlist`;
                                 setTimeout(() => {
                                     fc001_item_action.classList.add("fc001_item_action_show");
@@ -1373,7 +1393,7 @@
                     // cart element
                     const fc001_cart_view_icon_group = elementMaker("div", ["fc001_cart_view_icon_group"]);
                     fc001_icon_group_wrapper.appendChild(fc001_cart_view_icon_group);
-                    const fc001_cart_icon_wrapper = elementMaker("div", ["fc001_cart_icon_wrapper"]);
+                    const fc001_cart_icon_wrapper = elementMaker("div", ["fc001_cart_icon_wrapper"], `fc001_cart_icon_wrapper_id_${element?._id}`);
                     fc001_cart_view_icon_group.appendChild(fc001_cart_icon_wrapper);
                     const cartToltipWrapper = elementMaker("div", ["fc001_tooltip"]);
                     fc001_cart_icon_wrapper.appendChild(cartToltipWrapper);
@@ -1397,9 +1417,63 @@
                         fc001_cart_icon_wrapper.appendChild(fc001_iconCart);
                     };
 
-                    // add or remove wishlist fc001_active_icon
+                    // add or remove cart
+                    /*  (async function checkCartData() {
+                         let cartData;
+                         cartData = typeof handleCartCompilation === "function" && await handleCartCompilation();
+ 
+                         for (i = 0; i <= CartItemData?.length; i++) {
+                             let data = CartItemData[i];
+                             if (data.entityId === element._id && data.selectorId === element._id) {
+                                 fc001_cart_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             } else if (data.entityId === element._id && data.selectorId == "") {
+                                 fc001_cart_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             } else if (data.entityId === element._id) {
+                                 fc001_cart_icon_wrapper.children[1].classList.add("fc001_active_icon");
+                             };
+                         }
+                     })(); */
+
                     fc001_cart_icon_wrapper.addEventListener("click", async function () {
+                        event.stopPropagation();
                         console.log("Cart Clicked");
+                        if (document.getElementById(`fc001_cart_icon_wrapper_id_${element._id}`).children[1].classList.contains("fc001_active_icon")) {
+                            // console.log("true");
+                            let productRemovedFronCart = typeof handleCartAction === "function" && await handleWishlistAction("delete", {
+                                type: "item",
+                                Id: element._id,
+                                quantity: 1
+                            });
+                            if (productRemovedFronCart.status === true) {
+                                document.getElementById(`fc001_cart_icon_wrapper_id_${element._id}`).children[1].classList.remove("fc001_active_icon");
+                                fc001_item_action_txt.innerText = `Remove suceessfully`;
+                                fc001_tooltip_txt.innerText = `Add to Cart`;
+                                setTimeout(() => {
+                                    fc001_item_action.classList.add("fc001_item_action_show");
+                                    console.log("added succesfull");
+                                }, "100");
+                            };
+
+                        };
+
+                        if (!document.getElementById(`fc001_cart_icon_wrapper_id_${element._id}`).children[1].classList.contains("fc001_active_icon")) {
+                            // console.log("true");
+                            let productRemovedFronCart = typeof handleCartAction === "function" && await handleWishlistAction("add", {
+                                type: "item",
+                                Id: element._id,
+                                quantity: 1
+                            });
+                            if (productRemovedFronCart.status === true) {
+                                document.getElementById(`fc001_cart_icon_wrapper_id_${element._id}`).children[1].classList.add("fc001_active_icon");
+                                cartToltipText.innerText = `Remove from Cart`;
+                                setTimeout(() => {
+                                    fc001_item_action.classList.add("fc001_item_action_show");
+                                    fc001_item_action_txt.innerText = `Add suceessfully`;
+                                    console.log("added succesfull");
+                                }, "100");
+                            };
+
+                        };
 
 
                     });
@@ -1505,19 +1579,45 @@
             };
             await showCatagoriesItem();
 
+
             // hnadle slide controler
-            /* let sinleProductParentDiv = document.querySelectorAll(".fc001_featured_all_items");
-            console.log("sinleProductParentDiv", sinleProductParentDiv);
+            let sinleProductParentDiv = document.querySelectorAll(".fc001_featured_all_items");
+            /* console.log("sinleProductParentDiv", sinleProductParentDiv);
             function handleSlideControler() {
                 document.getElementById("fc001_next_btn_wrapper_id").addEventListener("click", function () {
-
+                    console.log("next btn click");
 
                 });
             };
             handleSlideControler(); */
+            const arrows = document.querySelectorAll(".fc001_next_btn_wrapper");
+            console.log("arrows", arrows);
+            const container = document.querySelectorAll(".fc001_tab_content");
+
+            arrows.forEach((arrow, i) => {
+                const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
+                console.log("ItemNo", ItemNo);
+                let clickitem = 0;
+                arrow.addEventListener("click", () => {
+                    console.log("next btn click");
+                    clickitem++;
+                    if (ItemNo - (5 + clickitem) >= 0) {
+                        container[i].style.transform = `translateX(${container[i].computedStyleMap().get("transform")[0].x.value - 20}%)`;
+                        container[i].style.overflow = "scroll";
+                    };
+                });
+            });
 
 
 
+            // view all btn
+
+            /* function viewAllBtnHandle() {
+                document.getElementById("fc001_featured_item_btn_wrapper_id").addEventListener("click", function () {
+                    typeof handleNavigate === "function" && handleNavigate(`(/category/${}}`);
+                })
+            };
+            viewAllBtnHandle(); */
 
 
 
