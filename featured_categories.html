@@ -1196,6 +1196,13 @@
             const Catagories = `6304ac0b7c41d3abab7e2286,6304abf87c41d3abab7e2271,6304acb21b2dd5af60940b54,63070c926aa739c3c181b89c`;
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
+            const showZeroReview = true;
+            const DisplayShadow = true;
+            const boxShadowColor = `10px 20px 30px blue`;
+            const showCartButton = true;
+            const showWishlistButton = true;
+            const displayRating = true;
+            const itemImageBackgroundColor = false;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
             const skeletonWrapper = document.getElementById("fc001_skeleton_template_wrapper");
             const fc001_section_title = document.querySelector(".fc001_section_title");
@@ -1211,7 +1218,7 @@
 
 
 
-            /* for (let i = 0; i < 5; i++) {
+            /* for (let i = 0; i < 10; i++) {
                 skeletonDiv.append(skeletonWrapper.content.cloneNode(true));
             }; */
 
@@ -1240,20 +1247,26 @@
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
+                // console.log("catNumber", getCatagoriesName);
                 const firstId = getCatagoriesName[0]?._id;
-                // console.log("firstId length" ,firstId.length );
                 await showCatagoriesItem(firstId);
+
+                /* for (const i of getCatagoriesName.entries()) {
+                    // console.log(i[0]);
+                    const indexNumber = i[0];
+                    console.log("indexNumber", indexNumber);
+                    await showCatagoriesItem(indexNumber);
+                } */
+
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
-                    // console.log("singleCatName", element);
                     let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
-                    // console.log("catagoriesTabButton", catagoriesTabButton);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
                     let CatagiresId = element?._id;
                     catagoriesTabButton.addEventListener("click", async function (e) {
                         e.preventDefault();
-                        document.getElementById("fc001_featured_catagories_all_product_id").innerHTML = " ";
+                        document.getElementById("fc001_featured_catagories_all_product_id").textContent = " ";
                         await showCatagoriesItem(CatagiresId);
                         viewAllBtnHandle(CatagiresId);
                     });
@@ -1283,24 +1296,32 @@
 
             // get catagories all item
             async function showCatagoriesItem(CatagiresId) {
+                // console.log("catagoriesId" , CatagiresId);
                 const LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
 
                 if (LoadCatagoriesItem?.length == 0 || LoadCatagoriesItem === "undefined") {
+                    const noDataTextWrapper = elementMaker("div");
                     const noDataText = elementMaker("span");
                     noDataText.innerText = `No Item found`;
-                    noDataText.style.textAlign = "center";
-                    document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataText);
+                    noDataText.style.fontSize = `30px`;
+                    noDataText.style.color = `rgba(30,39,46,80%)`;
+                    noDataTextWrapper.appendChild(noDataText);
+                    document.querySelector(".fc001_featured_all_items").style.margin = `0 auto`;
+                    document.getElementById("fc001_featured_catagories_all_product_id").style.minHeight = `350px`;
+                    document.getElementById("fc001_featured_catagories_all_product_id").style.display = `flex`;
+                    document.getElementById("fc001_featured_catagories_all_product_id").style.alignItems = `center`;
+                    document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataTextWrapper);
                 }
+                for (let i = 0; i < LoadCatagoriesItem?.length; i++) {
 
-                for (let i = 0; i <= LoadCatagoriesItem?.length; i++) {
-                    /*  for (let i = 0; i < 5; i++) {
-                         skeletonDiv.remove(skeletonWrapper.content.cloneNode(true));
-                     }; */
+                    /* for (let i = 0; i < 10; i++) {
+                        skeletonDiv.children[0].remove();
+                    }; */
 
                     const element = LoadCatagoriesItem[i];
-                    // console.log("element", element._id);
+                    // console.log("element", element);
                     let FeatureImage = `https://www.soppiya.com/media/images/${BUSINESS_ID}/item/${element?._id}/${element?.image}`;
-                    const fc001_single_product = elementMaker("div", ["fc001_single_product", "fc001_card_shadow"]);
+                    const fc001_single_product = elementMaker("div", ["fc001_single_product"]);
                     const fc001_product_top = elementMaker("div", ["fc001_product_top"]);
                     const fc001_product_bottom = elementMaker("div", ["fc001_product_bottom"]);
                     fc001_single_product.appendChild(fc001_product_top);
@@ -1322,6 +1343,15 @@
                     fc001_single_product.addEventListener("click", function () {
                         typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
                     });
+
+                    if (DisplayShadow == true) {
+                        fc001_single_product.classList.add("fc001_card_shadow");
+                    }
+                    if (itemImageBackgroundColor == true) {
+                        fc001_product_img.style.backgroundColor = `red`;
+                    }
+
+
                     // wishlist element
                     const fc001_icon_group = elementMaker("div", ["fc001_icon_group"]);
                     fc001_product_top.appendChild(fc001_icon_group);
@@ -1346,7 +1376,7 @@
                                                     </svg>`;
 
 
-                    if (element?.hasVariations == false) {
+                    if (element?.hasVariations == false && showWishlistButton == true) {
                         fc001_wishlist_icon_wrapper.appendChild(fc001_icon);
                     }
 
@@ -1445,9 +1475,10 @@
                                                         </svg>
                     `;
 
-                    if (element?.hasVariations == false) {
+                    if (element?.hasVariations == false && showCartButton == true) {
                         fc001_cart_icon_wrapper.appendChild(fc001_iconCart);
                     };
+
 
                     // add or remove cart
                     /*  (async function checkCartData() {
@@ -1566,7 +1597,7 @@
                     }
 
 
-                    // product review display
+                    // product review showing
                     const reviewParentElement = elementMaker("div", ["fc001_product_review_area"]);
                     const ratingNumber = element?.reviewRating?.rating;
                     function showReviewStar(ratingNumber, reviewParentElement) {
@@ -1600,17 +1631,24 @@
                             };
                         };
 
-                        // document.getElementById("fc001_product_content_id").appendChild(reviewParentElement);
-                        fc001_product_content.appendChild(reviewParentElement);
+                        if (showZeroReview == true && displayRating == true) {
+                            if (ratingNumber == 0 || ratingNumber !== 0) {
+                                fc001_product_content.appendChild(reviewParentElement);
+                            }
+                        } else if (showZeroReview == false) {
+                            if (ratingNumber !== 0) {
+                                fc001_product_content.appendChild(reviewParentElement);
+                            }
+                        }
+
+
                     }
                     showReviewStar(ratingNumber, reviewParentElement);
-                    fc001_product_content.appendChild(reviewParentElement);
-
 
                     fc001_featured_catagories_all_product_id.appendChild(fc001_single_product);
                 }
             };
-            await showCatagoriesItem();
+            // await showCatagoriesItem();
 
 
             // hnadle slide controler
