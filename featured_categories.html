@@ -1193,7 +1193,7 @@
 
         (async function () {
             const BUSINESS_ID = "6304aa113cb8eba9248eac8d";
-            const Catagories = `6304ac0b7c41d3abab7e2286,6304abf87c41d3abab7e2271,6304acb21b2dd5af60940b54`;
+            const Catagories = `6304ac0b7c41d3abab7e2286,6304abf87c41d3abab7e2271,6304acb21b2dd5af60940b54,63070c926aa739c3c181b89c`;
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
@@ -1240,25 +1240,58 @@
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
-                const firstId = getCatagoriesName[0]._id;
+                const firstId = getCatagoriesName[0]?._id;
+                // console.log("firstId length" ,firstId.length );
                 await showCatagoriesItem(firstId);
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
                     // console.log("singleCatName", element);
-                    let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn", "fc001_active_category"]);
+                    let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
+                    // console.log("catagoriesTabButton", catagoriesTabButton);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
-                    let CatagiresId = element._id;
-                    catagoriesTabButton.addEventListener("click", async function () {
+                    let CatagiresId = element?._id;
+                    catagoriesTabButton.addEventListener("click", async function (e) {
+                        e.preventDefault();
+                        document.getElementById("fc001_featured_catagories_all_product_id").innerHTML = " ";
                         await showCatagoriesItem(CatagiresId);
+                        viewAllBtnHandle(CatagiresId);
                     });
                 }
             };
             await showCatagoriesbtn(getCatagoriesName);
 
+            function activeCatagories() {
+                const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
+                const firstTabBtn = allTabBtn[0];
+                firstTabBtn.classList.add("fc001_active_category");
+                for (let i = 0; i < allTabBtn.length; i++) {
+                    const element = allTabBtn[i];
+                    element.addEventListener("click", function () {
+                        RemoveActiveCatagories();
+                        element.classList.add("fc001_active_category");
+                    });
+                };
+            };
+            activeCatagories();
+            function RemoveActiveCatagories() {
+                const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
+                for (singleItem of allTabBtn) {
+                    singleItem.classList.contains("fc001_active_category") && singleItem.classList.remove("fc001_active_category");
+                };
+            };
+
             // get catagories all item
             async function showCatagoriesItem(CatagiresId) {
                 const LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+
+                if (LoadCatagoriesItem?.length == 0 || LoadCatagoriesItem === "undefined") {
+                    const noDataText = elementMaker("span");
+                    noDataText.innerText = `No Item found`;
+                    noDataText.style.textAlign = "center";
+                    document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataText);
+                }
+
                 for (let i = 0; i <= LoadCatagoriesItem?.length; i++) {
                     /*  for (let i = 0; i < 5; i++) {
                          skeletonDiv.remove(skeletonWrapper.content.cloneNode(true));
@@ -1287,9 +1320,8 @@
                         fc001_product_top.appendChild(fc001_batch_wrapper);
                     };
                     fc001_single_product.addEventListener("click", function () {
-                        // console.log(element.slug);
                         typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
-                    })
+                    });
                     // wishlist element
                     const fc001_icon_group = elementMaker("div", ["fc001_icon_group"]);
                     fc001_product_top.appendChild(fc001_icon_group);
@@ -1574,6 +1606,7 @@
                     showReviewStar(ratingNumber, reviewParentElement);
                     fc001_product_content.appendChild(reviewParentElement);
 
+
                     fc001_featured_catagories_all_product_id.appendChild(fc001_single_product);
                 }
             };
@@ -1591,12 +1624,11 @@
             };
             handleSlideControler(); */
             const arrows = document.querySelectorAll(".fc001_next_btn_wrapper");
-            console.log("arrows", arrows);
             const container = document.querySelectorAll(".fc001_tab_content");
 
             arrows.forEach((arrow, i) => {
                 const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
-                console.log("ItemNo", ItemNo);
+                // console.log("ItemNo", ItemNo);
                 let clickitem = 0;
                 arrow.addEventListener("click", () => {
                     console.log("next btn click");
@@ -1610,14 +1642,15 @@
 
 
 
-            // view all btn
 
-            /* function viewAllBtnHandle() {
+            // view all btn
+            function viewAllBtnHandle(CatagiresId) {
                 document.getElementById("fc001_featured_item_btn_wrapper_id").addEventListener("click", function () {
-                    typeof handleNavigate === "function" && handleNavigate(`(/category/${}}`);
+                    typeof handleNavigate === "function" && handleNavigate(`(/category/${CatagiresId}}`);
+                    console.log(`(/category/${CatagiresId}}`);
                 })
             };
-            viewAllBtnHandle(); */
+
 
 
 
