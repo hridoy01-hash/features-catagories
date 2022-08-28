@@ -643,6 +643,11 @@
             animation: skeleton-loading 1s linear infinite alternate;
         }
 
+        .fc001_skeleton_item {
+            width: 200px;
+            height: 300px;
+        }
+
         @keyframes skeleton-loading {
             0% {
 
@@ -977,8 +982,8 @@
 </head>
 
 <body>
-    <template id="fc001_skeleton_template_wrapper">
-        <div class="fc001_single_product skeleton">
+    <template id="fc001_feature_catagories_skeleton_template_id">
+        <div class="fc001_skeleton_item skeleton">
 
         </div>
     </template>
@@ -1216,8 +1221,8 @@
             const BackgroundImgOverlay = false;
             const overlayColor = `rgba(30,39,46)`;
             const overlayOpacity = `0.3`;
-            const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
-            const skeletonWrapper = document.getElementById("fc001_skeleton_template_wrapper");
+            let skeletonSingleDiv = document.getElementById("fc001_featured_catagories_all_product_id");
+            let skeletonWrapper = document.getElementById("fc001_feature_catagories_skeleton_template_id");
             const fc001_section_title = document.querySelector(".fc001_section_title");
             const fc001_tab_btn_group_id = document.getElementById('fc001_tab_btn_group_id');
             const productBottomAlignmentLeft = `fc001_product_content_left`;
@@ -1229,11 +1234,9 @@
             const showCatagoriesItemSlide = `fc001_tab_content_slide`;
             const showCatagoriesItemGrid = `fc001_tab_content_grid`;
 
-
-
-            /* for (let i = 0; i < 10; i++) {
-                skeletonDiv.append(skeletonWrapper.content.cloneNode(true));
-            }; */
+            for (let i = 0; i < 10; i++) {
+                skeletonSingleDiv.append(skeletonWrapper.content.cloneNode(true));
+            };
 
 
             // show section title
@@ -1253,7 +1256,7 @@
             sectionTitleAlignment();
             // show catagories item grid or slide
             function showCatagoriesItemStyle() {
-                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemGrid}`);
+                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemSlide}`);
             }
             showCatagoriesItemStyle();
 
@@ -1345,8 +1348,15 @@
 
             // get catagories all item
             async function showCatagoriesItem(CatagiresId) {
+
                 // console.log("catagoriesId" , CatagiresId);
                 const LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+
+                if (LoadCatagoriesItem.length) {
+                    for (let i = 0; i < 10; i++) {
+                        skeletonSingleDiv.children[0]?.remove();
+                    };
+                };
 
                 if (LoadCatagoriesItem?.length == 0 || LoadCatagoriesItem === "undefined") {
                     const noDataTextWrapper = elementMaker("div");
@@ -1362,10 +1372,6 @@
                     document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataTextWrapper);
                 }
                 for (let i = 0; i < LoadCatagoriesItem?.length; i++) {
-
-                    /* for (let i = 0; i < 10; i++) {
-                        skeletonDiv.children[0].remove();
-                    }; */
 
                     const element = LoadCatagoriesItem[i];
                     // console.log("element", element);
@@ -1736,7 +1742,7 @@
             // view all btn
             function viewAllBtnHandle(CatagiresId) {
                 document.getElementById("fc001_featured_item_btn_wrapper_id").addEventListener("click", function () {
-                    typeof handleNavigate === "function" && handleNavigate(`(/category/${CatagiresId}}`);
+                    typeof handleNavigate === "function" && handleNavigate(`/category/${CatagiresId}`);
                     console.log(`(/category/${CatagiresId}}`);
                 })
             };
