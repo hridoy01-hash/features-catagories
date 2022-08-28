@@ -55,23 +55,23 @@
 
         .fc001_featured_category_section {
             background-color: var(--bgColor);
-            /* background-image: url("https://i.ibb.co/jyqDr4d/360-F-337963325-EJu-Pj-Wsl-X3v-AFx-J59-L3y1cm6-Is-Sfo07s.jpg");
+            /* background-image: url("https://i.ibb.co/jyqDr4d/360-F-337963325-EJu-Pj-Wsl-X3v-AFx-J59-L3y1cm6-Is-Sfo07s.jpg"); */
             background-position: center;
             background-size: cover;
-            background-repeat: no-repeat; */
+            background-repeat: no-repeat;
             padding: 25px 0;
             position: relative;
         }
 
-        /* .fc001_bg_overlay{
+        .fc001_bg_overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color:var(--bgOverlayColor);
-            opacity: .80;
-        } */
+            /* background-color: var(--bgOverlayColor);
+            opacity: .80; */
+        }
 
         /* fc001_featured_heading */
         .fc001_featured_heading {
@@ -261,7 +261,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--itemOverlayColor);
+            /* background-color: var(--itemOverlayColor); */
             z-index: 6;
             visibility: hidden;
             opacity: 0;
@@ -1203,6 +1203,19 @@
             const showWishlistButton = true;
             const displayRating = true;
             const itemImageBackgroundColor = false;
+            const itemNameColor = `#1E272E`;
+            const itemVariationColor = `grey`;
+            const regularPriceColor = `#BD8448`;
+            const oldPriceColor = `grey`;
+            const itemOverlayColor = `rgba(30,39,46,80%)`;
+            const sectionTitleTextColor = `blue`;
+            const sectionBackgroundColor = false;
+            const sectionBgColorCode = `rgba(30,39,46,50%)`;
+            const addSectionBgImage = false;
+            const backgroundimgURL = `url('https://wallpaperaccess.com/full/3430.jpg')`;
+            const BackgroundImgOverlay = false;
+            const overlayColor = `rgba(30,39,46)`;
+            const overlayOpacity = `0.3`;
             const skeletonDiv = document.getElementById("fc001_featured_catagories_all_product_id");
             const skeletonWrapper = document.getElementById("fc001_skeleton_template_wrapper");
             const fc001_section_title = document.querySelector(".fc001_section_title");
@@ -1235,6 +1248,7 @@
             // section title alignment
             function sectionTitleAlignment() {
                 document.getElementById("fc001_featured_heading_id").classList.add(`${sectionTitleBetween}`);
+                fc001_section_title.style.color = `${sectionTitleTextColor}`;
             }
             sectionTitleAlignment();
             // show catagories item grid or slide
@@ -1242,6 +1256,41 @@
                 document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemGrid}`);
             }
             showCatagoriesItemStyle();
+
+            // section bg color 
+            function sectionbgColor() {
+                if (sectionBackgroundColor == true) {
+                    document.querySelector(".fc001_featured_category_section").style.backgroundColor = `${sectionBgColorCode}`;
+                }
+            };
+            sectionbgColor();
+            // section img color
+            function addSectionImage() {
+                if (addSectionBgImage == true) {
+                    document.querySelector(".fc001_featured_category_section").style.backgroundImage = `${backgroundimgURL}`;
+                }
+            };
+            addSectionImage();
+
+            // img or bg
+            function showImageOrBgColor() {
+                if (sectionBackgroundColor == true && addSectionBgImage == true) {
+                    document.querySelector(".fc001_featured_category_section").style.backgroundImage = `${backgroundimgURL}`;
+                }
+            };
+            showImageOrBgColor();
+
+            // add img overlay
+            function addImageOverlay() {
+                if (BackgroundImgOverlay == true) {
+                    const fc001_bg_overlay = elementMaker("div", ["fc001_bg_overlay"]);
+                    // document.querySelector(".fc001_featured_category_section").appendChild(fc001_bg_overlay);fc001_bg_overlay
+                    fc001_bg_overlay.style.backgroundColor = `${overlayColor}`;
+                    fc001_bg_overlay.style.opacity = `${overlayOpacity}`;
+                    document.querySelector(".fc001_container").appendChild(fc001_bg_overlay);
+                }
+            };
+            addImageOverlay();
 
             // show catagories btn
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
@@ -1328,6 +1377,7 @@
                     fc001_single_product.appendChild(fc001_product_bottom);
                     const fc001_item_overlay = elementMaker("div", ["fc001_item_overlay"]);
                     fc001_product_top.appendChild(fc001_item_overlay);
+                    fc001_item_overlay.style.backgroundColor = `${itemOverlayColor}`;
                     const fc001_product_img = elementMaker("div", ["fc001_product_img"]);
                     let productImage = elementMaker("img");
                     setAttributes(productImage, { "src": `${FeatureImage}` });
@@ -1571,7 +1621,6 @@
                     };
 
                     // product bottom content
-                    // const fc001_product_content = elementMaker("div", ["fc001_product_content", "fc001_product_content_center"]);
                     const fc001_product_content = elementMaker("div", ["fc001_product_content", `${productBottomAlignmentLeft}`]);
                     fc001_product_bottom.appendChild(fc001_product_content);
                     const fc001_product_name_wrapper = elementMaker("div", ["fc001_product_name_wrapper"]);
@@ -1579,18 +1628,21 @@
                     const fc001_product_name = elementMaker("p", ["fc001_product_name"]);
                     fc001_product_name.innerText = `${element?.name}`;
                     fc001_product_name_wrapper.appendChild(fc001_product_name);
+                    fc001_product_name.style.color = `${itemNameColor}`;
                     const fc001_product_variant = elementMaker("div", ["fc001_product_variant"]);
                     fc001_product_content.appendChild(fc001_product_variant);
                     const fc001_product_variant_txt = elementMaker("span", ["fc001_product_variant_txt"]);
                     fc001_product_variant_txt.innerText = `Black,Metal`;
                     fc001_product_variant.appendChild(fc001_product_variant_txt);
+                    fc001_product_variant_txt.style.color = `${itemVariationColor}`;
                     const fc001_product_price_wrapper = elementMaker("div", ["fc001_product_price_wrapper"]);
                     fc001_product_content.appendChild(fc001_product_price_wrapper);
                     const fc001_product_price_regular = elementMaker("span", ["fc001_product_price", "fc001_product_regular_price"]);
                     fc001_product_price_regular.innerText = ` ${CURRENCY} ${element?.price}`;
+                    fc001_product_price_regular.style.color = `${regularPriceColor}`;
                     fc001_product_price_wrapper.appendChild(fc001_product_price_regular);
                     const fc001_product_old_price = elementMaker("span", ["fc001_product_old_price", "fc001_product_price"]);
-                    // fc001_product_old_price.innerText = `${CURRENCY} 1500`;
+                    fc001_product_old_price.style.color = `${oldPriceColor}`;
                     fc001_product_old_price.innerText = `${CURRENCY} ${element?.flashPrice}`;
                     if (element?.flashPrice) {
                         fc001_product_price_wrapper.appendChild(fc001_product_old_price);
