@@ -1202,7 +1202,7 @@
             let CURRENCY = "BDT";
             const fetauredCatagoriesTitle = `New Arriaval`;
             const showZeroReview = true;
-            const DisplayShadow = true;
+            const DisplayBoxShadow = false;
             const boxShadowColor = `10px 20px 30px blue`;
             const showCartButton = true;
             const showWishlistButton = true;
@@ -1256,7 +1256,7 @@
             sectionTitleAlignment();
             // show catagories item grid or slide
             function showCatagoriesItemStyle() {
-                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemSlide}`);
+                document.getElementById("fc001_featured_category_items_id").classList.add(`${showCatagoriesItemGrid}`);
             }
             showCatagoriesItemStyle();
 
@@ -1299,16 +1299,11 @@
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             async function showCatagoriesbtn(getCatagoriesName) {
-                // console.log("catNumber", getCatagoriesName);
+                console.log("catNumber", getCatagoriesName);
                 const firstId = getCatagoriesName[0]?._id;
-                await showCatagoriesItem(firstId);
-
-                /* for (const i of getCatagoriesName.entries()) {
-                    // console.log(i[0]);
-                    const indexNumber = i[0];
-                    console.log("indexNumber", indexNumber);
-                    await showCatagoriesItem(indexNumber);
-                } */
+                // console.log("firstId" , firstId);
+                let indexNumber = 0;
+                await showCatagoriesItem(firstId, indexNumber);
 
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
@@ -1318,8 +1313,9 @@
                     let CatagiresId = element?._id;
                     catagoriesTabButton.addEventListener("click", async function (e) {
                         e.preventDefault();
+                        let indexNumber = i;
                         document.getElementById("fc001_featured_catagories_all_product_id").textContent = " ";
-                        await showCatagoriesItem(CatagiresId);
+                        await showCatagoriesItem(CatagiresId, indexNumber);
                         viewAllBtnHandle(CatagiresId);
                     });
                 }
@@ -1338,6 +1334,7 @@
                     });
                 };
             };
+
             activeCatagories();
             function RemoveActiveCatagories() {
                 const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
@@ -1347,16 +1344,49 @@
             };
 
             // get catagories all item
-            async function showCatagoriesItem(CatagiresId) {
 
-                // console.log("catagoriesId" , CatagiresId);
-                const LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+            async function showCatagoriesItem(CatagiresId, indexNumber) {
+                console.log("indexNumber", indexNumber);
+                let LoadCatagoriesItem;
+                LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                // LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${firstId}`);
 
-                if (LoadCatagoriesItem.length) {
+                /* let firstIndex = true;
+
+                let secondIndex = true;
+
+                let thirdIndex = true;
+                let fourIndex = true;
+                let fiveIndex = false;
+
+                if (firstIndex == true && indexNumber == 0) {
+                    firstIndex = false;
+                    console.log("firstIndex", firstIndex);
+                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                }
+                if (secondIndex == true && indexNumber == 1) {
+                    secondIndex = false;
+                    console.log("secondIndex", secondIndex);
+                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                }
+                if (thirdIndex == true && indexNumber == 2) {
+                    thirdIndex = false;
+                    console.log("thirdIndex", thirdIndex);
+                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                }
+                if (fourIndex == true && fourIndex == 3) {
+                    fourIndex = false;
+                    console.log("fourIndex", fourIndex);
+                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                } */
+
+
+                if (LoadCatagoriesItem?.length) {
                     for (let i = 0; i < 10; i++) {
                         skeletonSingleDiv.children[0]?.remove();
                     };
                 };
+
 
                 if (LoadCatagoriesItem?.length == 0 || LoadCatagoriesItem === "undefined") {
                     const noDataTextWrapper = elementMaker("div");
@@ -1371,6 +1401,9 @@
                     document.getElementById("fc001_featured_catagories_all_product_id").style.alignItems = `center`;
                     document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataTextWrapper);
                 }
+
+
+
                 for (let i = 0; i < LoadCatagoriesItem?.length; i++) {
 
                     const element = LoadCatagoriesItem[i];
@@ -1400,7 +1433,7 @@
                         typeof handleNavigate === "function" && handleNavigate(`(/item/${element.slug}`);
                     });
 
-                    if (DisplayShadow == true) {
+                    if (DisplayBoxShadow == true) {
                         fc001_single_product.classList.add("fc001_card_shadow");
                     }
                     if (itemImageBackgroundColor == true) {
@@ -1706,21 +1739,29 @@
                     fc001_featured_catagories_all_product_id.appendChild(fc001_single_product);
                 }
             };
-            // await showCatagoriesItem();
 
 
             // hnadle slide controler
-            let sinleProductParentDiv = document.querySelectorAll(".fc001_featured_all_items");
-            /* console.log("sinleProductParentDiv", sinleProductParentDiv);
-            function handleSlideControler() {
-                document.getElementById("fc001_next_btn_wrapper_id").addEventListener("click", function () {
-                    console.log("next btn click");
-
-                });
-            };
-            handleSlideControler(); */
+            /*  let sinleProductParentDiv = document.querySelectorAll(".fc001_featured_all_items");
+             function handleSlideControler() {
+                 let clickitem = 0;
+                 document.getElementById("fc001_next_btn_wrapper_id").addEventListener("click", function () {
+                     console.log("next btn click");
+                     document.getElementById("fc001_featured_catagories_all_product_id").style.justifyContent = `flex-start`;
+                     document.getElementById("fc001_featured_catagories_all_product_id").style.overflowX = `scroll`;
+                     document.getElementById("fc001_featured_catagories_all_product_id").style.scrollBehavior = `smooth`;
+                     const allSingleProduct = document.querySelectorAll(".fc001_single_product");
+                     console.log("allSingleProduct", allSingleProduct);
+                     for (const singleProduct of allSingleProduct) {
+                         singleProduct.style.transform = `translateX(-90%)`;
+                     }
+ 
+                 });
+             };
+             handleSlideControler(); */
             const arrows = document.querySelectorAll(".fc001_next_btn_wrapper");
             const container = document.querySelectorAll(".fc001_tab_content");
+            // const container = document.querySelectorAll(".fc001_featured_all_items");
 
             arrows.forEach((arrow, i) => {
                 const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
@@ -1744,7 +1785,7 @@
                 document.getElementById("fc001_featured_item_btn_wrapper_id").addEventListener("click", function () {
                     typeof handleNavigate === "function" && handleNavigate(`/category/${CatagiresId}`);
                     console.log(`(/category/${CatagiresId}}`);
-                })
+                });
             };
 
 
@@ -1768,6 +1809,8 @@
 
         })();
     </script>
+
+    <script src="./feature.js"></script>
 </body>
 
 </html>
