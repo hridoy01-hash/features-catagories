@@ -1213,7 +1213,7 @@
             const regularPriceColor = `#BD8448`;
             const oldPriceColor = `grey`;
             const itemOverlayColor = `rgba(30,39,46,80%)`;
-            const sectionTitleTextColor = `blue`;
+            const sectionTitleTextColor = `orange`;
             const sectionBackgroundColor = false;
             const sectionBgColorCode = `rgba(30,39,46,50%)`;
             const addSectionBgImage = false;
@@ -1298,21 +1298,29 @@
             // show catagories btn
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
+            let storeCatagoriesID = {};
             async function showCatagoriesbtn(getCatagoriesName) {
                 console.log("catNumber", getCatagoriesName);
                 const firstId = getCatagoriesName[0]?._id;
-                // console.log("firstId" , firstId);
                 let indexNumber = 0;
                 await showCatagoriesItem(firstId, indexNumber);
+                viewAllBtnHandle(firstId);
+
+                for (let i = 0; i < getCatagoriesName.length; i++) {
+                    const elementID = getCatagoriesName[i];
+                    console.log("elementID", elementID?._id);
+                    storeCatagoriesID.cataId1 = elementID?._id;
+
+                }
 
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
+                    // console.log("catNameId" , element?._id);
                     let catagoriesTabButton = elementMaker("button", ["fc001_tab_btn"]);
                     catagoriesTabButton.innerText = element.name;
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
                     let CatagiresId = element?._id;
                     catagoriesTabButton.addEventListener("click", async function (e) {
-                        e.preventDefault();
                         let indexNumber = i;
                         document.getElementById("fc001_featured_catagories_all_product_id").textContent = " ";
                         await showCatagoriesItem(CatagiresId, indexNumber);
@@ -1321,6 +1329,7 @@
                 }
             };
             await showCatagoriesbtn(getCatagoriesName);
+            console.log("storeCatagoriesID", storeCatagoriesID);
 
             function activeCatagories() {
                 const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
@@ -1334,8 +1343,8 @@
                     });
                 };
             };
-
             activeCatagories();
+
             function RemoveActiveCatagories() {
                 const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
                 for (singleItem of allTabBtn) {
@@ -1344,41 +1353,25 @@
             };
 
             // get catagories all item
-
             async function showCatagoriesItem(CatagiresId, indexNumber) {
-                console.log("indexNumber", indexNumber);
-                let LoadCatagoriesItem;
-                LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                // LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${firstId}`);
+                console.log('indexNumber', indexNumber);
+                let LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                // let LoadCatagoriesItem;
+                // console.log("LoadCatagoriesItem", LoadCatagoriesItem);
 
-                /* let firstIndex = true;
+                // let storeData = [];
+                // storeData.push({ ...LoadCatagoriesItem, CatagiresId });
+                // console.log("storeData", storeData[0]);
+                // console.log(storeData[0].CatagiresId);
+                // const size = Object.keys(storeData)[0]?.length;
+                // console.log("size", size);
 
-                let secondIndex = true;
 
-                let thirdIndex = true;
-                let fourIndex = true;
-                let fiveIndex = false;
 
-                if (firstIndex == true && indexNumber == 0) {
-                    firstIndex = false;
-                    console.log("firstIndex", firstIndex);
-                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                }
-                if (secondIndex == true && indexNumber == 1) {
-                    secondIndex = false;
-                    console.log("secondIndex", secondIndex);
-                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                }
-                if (thirdIndex == true && indexNumber == 2) {
-                    thirdIndex = false;
-                    console.log("thirdIndex", thirdIndex);
-                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                }
-                if (fourIndex == true && fourIndex == 3) {
-                    fourIndex = false;
-                    console.log("fourIndex", fourIndex);
-                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                } */
+
+
+
+
 
 
                 if (LoadCatagoriesItem?.length) {
@@ -1760,6 +1753,7 @@
              };
              handleSlideControler(); */
             const arrows = document.querySelectorAll(".fc001_next_btn_wrapper");
+            const rigthArrow = document.querySelectorAll(".fc001_prev_btn_wrapper");
             const container = document.querySelectorAll(".fc001_tab_content");
             // const container = document.querySelectorAll(".fc001_featured_all_items");
 
@@ -1772,6 +1766,20 @@
                     clickitem++;
                     if (ItemNo - (5 + clickitem) >= 0) {
                         container[i].style.transform = `translateX(${container[i].computedStyleMap().get("transform")[0].x.value - 20}%)`;
+                        container[i].style.overflow = "scroll";
+                    };
+                });
+            });
+
+            rigthArrow.forEach((rigthArrow, i) => {
+                const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
+                // console.log("ItemNo", ItemNo);
+                let clickitem = 0;
+                rigthArrow.addEventListener("click", () => {
+                    console.log("next btn click");
+                    clickitem++;
+                    if (ItemNo - (5 + clickitem) >= 0) {
+                        container[i].style.transform = `translateX(${container[i].computedStyleMap().get("transform")[0].x.value + 20}%)`;
                         container[i].style.overflow = "scroll";
                     };
                 });
