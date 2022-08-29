@@ -1299,19 +1299,13 @@
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
 
             let storeCatagoriesID = {};
+
             async function showCatagoriesbtn(getCatagoriesName) {
                 console.log("catNumber", getCatagoriesName);
                 const firstId = getCatagoriesName[0]?._id;
                 let indexNumber = 0;
                 await showCatagoriesItem(firstId, indexNumber);
                 viewAllBtnHandle(firstId);
-
-                for (let i = 0; i < getCatagoriesName.length; i++) {
-                    const elementID = getCatagoriesName[i];
-                    console.log("elementID", elementID?._id);
-                    storeCatagoriesID.cataId1 = elementID?._id;
-
-                }
 
                 for (let i = 0; i < getCatagoriesName.length; i++) {
                     const element = getCatagoriesName[i];
@@ -1329,7 +1323,6 @@
                 }
             };
             await showCatagoriesbtn(getCatagoriesName);
-            console.log("storeCatagoriesID", storeCatagoriesID);
 
             function activeCatagories() {
                 const allTabBtn = document.querySelectorAll(".fc001_tab_btn");
@@ -1354,8 +1347,10 @@
 
             // get catagories all item
             async function showCatagoriesItem(CatagiresId, indexNumber) {
-                console.log('indexNumber', indexNumber);
+                // console.log('indexNumber', indexNumber);
                 let LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+
+
                 // let LoadCatagoriesItem;
                 // console.log("LoadCatagoriesItem", LoadCatagoriesItem);
 
@@ -1365,12 +1360,6 @@
                 // console.log(storeData[0].CatagiresId);
                 // const size = Object.keys(storeData)[0]?.length;
                 // console.log("size", size);
-
-
-
-
-
-
 
 
 
