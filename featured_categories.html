@@ -1297,7 +1297,6 @@
 
             // show catagories btn
             const getCatagoriesName = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/cuscatInfo`);
-            let storeCatagoriesData = {};
             /* for (let i = 0; i < getCatagoriesName.length; i++) {
                 const element = {}
                 element[i] = [];
@@ -1306,7 +1305,7 @@
                 console.log("storeCatagoriesID", storeCatagoriesID);
             } */
 
-
+            let storeCatagoriesData = {};
             async function showCatagoriesbtn(getCatagoriesName) {
                 console.log("catNumber", getCatagoriesName);
 
@@ -1356,81 +1355,30 @@
             };
 
             // get catagories all item
-            async function showCatagoriesItem(CatagiresId, indexNumber) {
-                let LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
 
-                // let LoadCatagoriesItem;
+            async function showCatagoriesItem(CatagiresId, indexNumber) {
+
                 let getCatagoriesId = CatagiresId;
+                let LoadCatagoriesItem;
+                const objectKeys = Object.keys(storeCatagoriesData);
+                const objectValues = Object.values(storeCatagoriesData);
 
                 async function keyInitialization(getCatagoriesId, LoadCatagoriesItem) {
                     storeCatagoriesData[`${getCatagoriesId}`] = LoadCatagoriesItem;
                 }
-                await keyInitialization(getCatagoriesId, LoadCatagoriesItem);
 
-                const objectKeys = Object.keys(storeCatagoriesData);
-                const objectValues = Object.values(storeCatagoriesData);
+                const foundID = objectKeys.includes(getCatagoriesId);
 
+
+                if (foundID == false) {
+                    LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
+                    await keyInitialization(getCatagoriesId, LoadCatagoriesItem);
+
+                } else if (foundID == true) {
+                    LoadCatagoriesItem = storeCatagoriesData[`${getCatagoriesId}`];
+                }
+                console.log("data by id", storeCatagoriesData[`${getCatagoriesId}`]);
                 console.log("storeCatagoriesData", storeCatagoriesData);
-
-                /* if (Object.keys(storeCatagoriesData)[0] === getCatagoriesId) {
-                    LoadCatagoriesItem = Object.values(storeCatagoriesData)[0];
-                } */
-
-                const idArray = [];
-                for (let i = 0; i < objectKeys.length; i++) {
-                    const element = objectKeys[i];
-                    idArray.push(element);
-                }
-                console.log("idArray", idArray);
-
-                console.log("getCatagoriesId", getCatagoriesId);
-
-                const foundID = idArray.includes(getCatagoriesId);
-                console.log("foundID", foundID);
-
-                for (let i = 0; i < objectValues.length; i++) {
-                    const element = objectValues[i];
-                    console.log("ObjectValue", element);
-                    if (foundID) {
-                        LoadCatagoriesItem = element;
-                    } else {
-                        LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`)
-                    }
-                }
-
-
-
-                /* if (foundID) {
-                    LoadCatagoriesItem = Object.values(storeCatagoriesData);
-                } else {
-                    // LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                } */
-
-
-
-
-
-                /*  if (foundID) {
-                     console.log("objectValues", objectValues);
-                     LoadCatagoriesItem = objectValues;
-                 } else {
-                     LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                 } */
-
-
-
-
-
-                /* for (let i = 0; i < objectKeys.length; i++) {
-                    const element = objectKeys[i];
-
-                    if (element === getCatagoriesId) {
-                        LoadCatagoriesItem = Object.values(storeCatagoriesData);
-                    } else {
-                        LoadCatagoriesItem = await LoadDataFunction(`https://api.soppiya.com/v2.1/widget/category/items/${CatagiresId}`);
-                    }
-
-                } */
 
 
 
@@ -1815,38 +1763,46 @@
                  });
              };
              handleSlideControler(); */
-            const arrows = document.querySelectorAll(".fc001_next_btn_wrapper");
-            const rigthArrow = document.querySelectorAll(".fc001_prev_btn_wrapper");
-            const container = document.querySelectorAll(".fc001_tab_content");
 
-            arrows.forEach((arrow, i) => {
-                const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
+            const nextButton = document.querySelectorAll(".fc001_next_btn_wrapper");
+            // const nextButton = document.getElementById("fc001_next_btn_wrapper_id");
+            const previousButton = document.querySelectorAll(".fc001_prev_btn_wrapper");
+            const allProductWrapper = document.querySelectorAll(".fc001_tab_content");
+            // const allProductWrapper = document.getElementById("fc001_featured_catagories_all_product_id");
+
+
+            nextButton.forEach((nextButton, i) => {
+                const ItemNo = allProductWrapper[i].querySelectorAll(".fc001_single_product").length;
                 // console.log("ItemNo", ItemNo);
                 let clickitem = 0;
-                arrow.addEventListener("click", () => {
+                nextButton.addEventListener("click", () => {
                     console.log("next btn click");
                     clickitem++;
                     if (ItemNo - (5 + clickitem) >= 0) {
-                        container[i].style.transform = `translateX(${container[i].computedStyleMap().get("transform")[0].x.value - 20}%)`;
-                        container[i].style.overflow = "scroll";
+                        allProductWrapper[i].style.transform = `translateX(${allProductWrapper[i].computedStyleMap().get("transform")[0].x.value - 20}%)`;
+                        allProductWrapper[i].style.overflowX = "scroll";
+                        allProductWrapper[i].style.scrollBehavior = "smooth";
                     }
 
                 });
             });
 
-            rigthArrow.forEach((rigthArrow, i) => {
-                const ItemNo = container[i].querySelectorAll(".fc001_single_product").length;
+            previousButton.forEach((previousButton, i) => {
+                const ItemNo = allProductWrapper[i].querySelectorAll(".fc001_single_product").length;
                 // console.log("ItemNo", ItemNo);
                 let clickitem = 0;
-                rigthArrow.addEventListener("click", () => {
+                previousButton.addEventListener("click", () => {
                     console.log("next btn click");
                     clickitem++;
                     if (ItemNo - (5 + clickitem) >= 0) {
-                        container[i].style.transform = `translateX(${container[i].computedStyleMap().get("transform")[0].x.value + 20}%)`;
-                        container[i].style.overflow = "scroll";
+                        allProductWrapper[i].style.transform = `translateX(${allProductWrapper[i].computedStyleMap().get("transform")[0].x.value + 20}%)`;
+                        allProductWrapper[i].style.overflowX = "scroll";
+                        allProductWrapper[i].style.scrollBehavior = "smooth";
                     };
                 });
             });
+
+
 
 
 
