@@ -180,7 +180,7 @@
             padding: 20px 2px;
             min-width: 100%;
             transition: .3s;
-            transform: translateX(0);
+            scroll-behavior: smooth;
         }
 
         .fc001_tab_content::-webkit-scrollbar {
@@ -1754,18 +1754,22 @@
             allProductWrapper.forEach((item, i) => {
 
                 let containerDimensions = document.querySelector(".fc001_single_product").getBoundingClientRect();
-                containerDimensions = containerDimensions.width + 10;
+                // let containerDimensions;
+
+                containerDimensions = containerDimensions.width + 20;
                 console.log("containerDimensions", containerDimensions);
+
 
                 let nextBtnClick = 0;
                 let previousBtnClick = 0;
                 document.getElementById("fc001_prev_btn_wrapper_id").style.visibility = "hidden";
+
                 nextButton[i].addEventListener('click', () => {
                     nextBtnClick++;
                     // item.scrollLeft += 259;
                     console.log("btnCount", nextBtnClick);
-                    if (nextBtnClick == 5) {
-                        document.getElementById("fc001_next_btn_wrapper_id").style.opacity = 0;
+                    if (nextBtnClick == 20) {
+                        document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
                     }
                     if (nextBtnClick > 0) {
                         document.getElementById("fc001_prev_btn_wrapper_id").style.visibility = "visible";
@@ -1775,14 +1779,15 @@
                     allProductWrapper[i].style.overflowX = "scroll";
                     item.style.scrollBehavior = "smooth";
                     item.style.justifyContent = "flex-start";
+
                 });
 
 
                 previousButton[i].addEventListener('click', () => {
                     previousBtnClick++;
                     // item.scrollLeft -= 259;
-                    if (previousBtnClick == 1) {
-                        document.getElementById("fc001_next_btn_wrapper_id").style.opacity = 1;
+                    if (previousBtnClick > 1) {
+                        document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "visible";
                     }
                     item.scrollLeft -= containerDimensions;
                     allProductWrapper[i].style.overflowX = "scroll";
@@ -1790,56 +1795,6 @@
                     item.style.justifyContent = "flex-start";
                 });
             });
-
-
-
-
-
-            /* nextButton.forEach((nextButton, i) => {
-                const ItemNo = allProductWrapper[i].querySelectorAll(".fc001_single_product").length;
-                // console.log("ItemNo", ItemNo);
-                let clickitem = 0;
-                nextButton.addEventListener("click", () => {
-                    console.log("next btn click");
-                    clickitem++;
-                    if (ItemNo - (5 + clickitem) >= 0) {
-                        allProductWrapper[i].style.transform = `translateX(${allProductWrapper[i].computedStyleMap().get("transform")[0].x.value - 20}%)`;
-                        allProductWrapper[i].style.overflowX = "scroll";
-                        allProductWrapper[i].style.scrollBehavior = "smooth";
-                    } else {
-                        clickitem = 0;
-                        if (clickitem == 0) {
-                            nextButton.style.visibility = "hidden";
-                        }
-                    }
-
-                });
-            });
-
-            previousButton.forEach((previousButton, i) => {
-                const ItemNo = allProductWrapper[i].querySelectorAll(".fc001_single_product").length;
-                // console.log("ItemNo", ItemNo);
-                let clickitem = 0;
-                previousButton.addEventListener("click", () => {
-                    console.log("next btn click");
-                    clickitem++;
-                    if (ItemNo - (5 + clickitem) >= 0) {
-                        allProductWrapper[i].style.transform = `translateX(${allProductWrapper[i].computedStyleMap().get("transform")[0].x.value + 20}%)`;
-                        allProductWrapper[i].style.overflowX = "scroll";
-                        allProductWrapper[i].style.scrollBehavior = "smooth";
-
-                    } else {
-                        clickitem = 0;
-                        if (clickitem == 0) {
-                            previousButton.style.visibility = "hidden";
-                        } 
-                    }
-                });
-            }); */
-
-
-
-
 
 
             // view all btn

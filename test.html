@@ -7,38 +7,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>test html</title>
     <style>
-        #container {
-            width: 200px;
+        .container {
+            width: 145px;
             height: 100px;
             border: 1px solid #ccc;
             overflow-x: scroll;
+            scroll-behavior: smooth;
         }
 
-        #content {
+        .content {
             width: 250px;
             background-color: #ccc;
+        }
+
+        #textbox {
+            height: 300px;
+            width: 400px;
+            background-color: red;
+        }
+
+        #id {
+            height: 200px;
+            width: 300px;
+            background-color: red;
         }
     </style>
 </head>
 
 <body>
-    <div id="container">
-        <div id="content">Click the button to slide right!</div>
+
+    <p>Resize the browser window to fire the <code>resize</code> event.</p>
+    <p>Window height: <span id="height"></span></p>
+    <p>Window width: <span id="width"></span></p>
+
+    <div id="id">
+
     </div>
 
-    <button id="slide" type="button">Slide right</button>
 
     <script>
-        /*  let box = document.querySelector('.box');
-         let width = box.offsetWidth;
-         let height = box.offsetHeight;
-         console.log(width, height); */
+        const heightOutput = document.querySelector('#height');
+        const widthOutput = document.querySelector('#width');
+        const div = document.getElementsByClassName("class");
+        console.log("div", div);
 
-        const button = document.getElementById('slide');
+        function reportWindowSize() {
+            heightOutput.textContent = div.offsetWidth;
+        }
 
-        button.onclick = () => {
-            document.getElementById('container').scrollLeft += 20;
-        };
+
+        document.getElementById("id").onresize = reportWindowSize;
 
     </script>
 </body>
