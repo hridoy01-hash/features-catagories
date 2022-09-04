@@ -1081,7 +1081,7 @@
             const itemOverlayColor = `rgba(30,39,46,80%)`;
             const sectionTitleTextColor = `orange`;
             const sectionBackgroundColor = false;
-            const sectionBgColorCode = `rgba(30,39,46,50%)`;
+            const sectionBgColorCode = `rgba(30,39,46,10%)`;
             const addSectionBgImage = false;
             const backgroundimgURL = `url('https://wallpaperaccess.com/full/3430.jpg')`;
             const BackgroundImgOverlay = false;
@@ -1099,11 +1099,16 @@
             const sectionTitleReverse = `fc001_featured_heading_reverse`;
             const showCatagoriesItemSlide = `fc001_tab_content_slide`;
             const showCatagoriesItemGrid = `fc001_tab_content_grid`;
-            let screenWidth = document.body.clientWidth;
+            let screenWidth;
+            let slideProductMaxNumber;
 
             for (let i = 0; i < 10; i++) {
                 skeletonSingleDiv.append(skeletonWrapper.content.cloneNode(true));
             };
+
+            window.addEventListener('resize', function (event) {
+                screenWidth = document.body.clientWidth;
+            }, true);
 
 
             // show section title
@@ -1154,10 +1159,8 @@
             function addImageOverlay() {
                 if (BackgroundImgOverlay == true) {
                     const fc001_bg_overlay = elementMaker("div", ["fc001_bg_overlay"]);
-                    // document.querySelector(".fc001_featured_category_section").appendChild(fc001_bg_overlay);fc001_bg_overlay
                     fc001_bg_overlay.style.backgroundColor = `${overlayColor}`;
                     fc001_bg_overlay.style.opacity = `${overlayOpacity}`;
-                    // document.querySelector(".fc001_container").appendChild(fc001_bg_overlay);
                     document.querySelector(".fc001_featured_category_section").appendChild(fc001_bg_overlay);
                 }
             };
@@ -1184,6 +1187,7 @@
                     fc001_tab_btn_group_id.appendChild(catagoriesTabButton);
                     let CatagiresId = element?._id;
                     catagoriesTabButton.addEventListener("click", async function (e) {
+                        document.getElementById("fc001_featured_catagories_all_product_id").style.minHeight = `339px`;
                         let indexNumber = i;
                         document.getElementById("fc001_featured_catagories_all_product_id").textContent = " ";
                         await showCatagoriesItem(CatagiresId, indexNumber);
@@ -1215,7 +1219,6 @@
             };
 
             // get catagories all item
-
             async function showCatagoriesItem(CatagiresId, indexNumber) {
 
                 let getCatagoriesId = CatagiresId;
@@ -1239,6 +1242,7 @@
 
                 console.log("data by id", storeCatagoriesData[`${getCatagoriesId}`]);
                 console.log("storeCatagoriesData", storeCatagoriesData);
+                showProductSlide(LoadCatagoriesItem);
 
                 if (LoadCatagoriesItem?.length) {
                     for (let i = 0; i < 10; i++) {
@@ -1343,7 +1347,7 @@
                     /*  (async function checkWishlist() {
                          let wishlistData;
                          wishlistData = typeof getWishlist === "function" && await getWishlist();
- 
+     
                          for (i = 0; i <= wishlistData?.length; i++) {
                              let data = wishlistData[i];
                              if (data.entityId === element._id && data.selectorId === element._id) {
@@ -1434,7 +1438,7 @@
                     /*  (async function checkCartData() {
                          let cartData;
                          cartData = typeof handleCartCompilation === "function" && await handleCartCompilation();
- 
+     
                          for (i = 0; i <= CartItemData?.length; i++) {
                              let data = CartItemData[i];
                              if (data.entityId === element._id && data.selectorId === element._id) {
@@ -1608,6 +1612,12 @@
             const previousButton = document.querySelectorAll(".fc001_prev_btn_wrapper");
             const allProductWrapper = document.querySelectorAll(".fc001_tab_content");
 
+            function showProductSlide(LoadCatagoriesItem) {
+                let slideProduct = LoadCatagoriesItem;
+                slideProductMaxNumber = slideProduct.length;
+            }
+            console.log("slideProductMaxNumber", slideProductMaxNumber);
+
             allProductWrapper.forEach((item, i) => {
 
                 let containerDimensions = document.querySelector(".fc001_single_product").getBoundingClientRect();
@@ -1617,26 +1627,38 @@
 
                 let nextBtnClick = 0;
                 let previousBtnClick = 0;
-                document.getElementById("fc001_prev_btn_wrapper_id").style.visibility = "hidden";
+
 
                 nextButton[i].addEventListener('click', () => {
                     nextBtnClick++;
-
-                    /* if (screenWidth < 640) {
-                        if (nextBtnClick >= 8) {
+                    if (screenWidth <= 640) {
+                        let showProduct = 3;
+                        if (nextBtnClick == ((slideProductMaxNumber - showProduct))) {
                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
                         }
                     }
-                    if (screenWidth < 895) {
-                        console.log("screen size under 895px");
-                        if (nextBtnClick >= 11) {
+
+                    if (screenWidth => 640 && screenWidth < 900) {
+                        let showProduct = 3;
+                        if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
                         }
-                    } */
-
-                    if (nextBtnClick > 0) {
-                        document.getElementById("fc001_prev_btn_wrapper_id").style.visibility = "visible";
                     }
+
+                    /*  if (screenWidth => 900 && screenWidth < 1025) {
+                         let showProduct = 4;
+                         if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
+                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
+                         }
+                     }
+                     if (screenWidth => 1025) {
+                         let showProduct = 5;
+                         if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
+                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
+                         }
+                     } */
+
+
                     item.scrollLeft += containerDimensions;
                     allProductWrapper[i].style.overflowX = "scroll";
                     item.style.scrollBehavior = "smooth";
@@ -1647,15 +1669,16 @@
 
                 previousButton[i].addEventListener('click', () => {
                     previousBtnClick++;
-                    if (previousBtnClick > 1) {
-                        document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "visible";
-                    }
                     item.scrollLeft -= containerDimensions;
                     allProductWrapper[i].style.overflowX = "scroll";
                     item.style.scrollBehavior = "smooth";
                     item.style.justifyContent = "flex-start";
                 });
+
             });
+
+
+
 
 
             // view all btn
