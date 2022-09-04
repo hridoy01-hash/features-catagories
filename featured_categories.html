@@ -77,6 +77,8 @@
         .fc001_featured_heading {
             display: flex;
             gap: 15px;
+            position: relative;
+            z-index: 1;
         }
 
         .fc001_featured_heading_between {
@@ -119,6 +121,7 @@
 
         .fc001_featured_category_items {
             position: relative;
+            z-index: 1;
         }
 
         /* fc001_featured_all_items */
@@ -606,6 +609,8 @@
             align-items: center;
             justify-content: center;
             margin-top: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         .fc001_featured_item_btn {
@@ -1068,7 +1073,7 @@
             const showCartButton = true;
             const showWishlistButton = true;
             const displayRating = true;
-            const itemImageBackgroundColor = true;
+            const itemImageBackgroundColor = false;
             const itemNameColor = `#1E272E`;
             const itemVariationColor = `grey`;
             const regularPriceColor = `#BD8448`;
@@ -1152,7 +1157,8 @@
                     // document.querySelector(".fc001_featured_category_section").appendChild(fc001_bg_overlay);fc001_bg_overlay
                     fc001_bg_overlay.style.backgroundColor = `${overlayColor}`;
                     fc001_bg_overlay.style.opacity = `${overlayOpacity}`;
-                    document.querySelector(".fc001_container").appendChild(fc001_bg_overlay);
+                    // document.querySelector(".fc001_container").appendChild(fc001_bg_overlay);
+                    document.querySelector(".fc001_featured_category_section").appendChild(fc001_bg_overlay);
                 }
             };
             addImageOverlay();
@@ -1255,8 +1261,7 @@
                     document.getElementById("fc001_featured_catagories_all_product_id").appendChild(noDataTextWrapper);
                 }
 
-                if (LoadCatagoriesItem?.length == 1) {
-                    alert("Item Count 1");
+                if (LoadCatagoriesItem?.length === 1) {
                     document.getElementById("fc001_featured_catagories_all_product_id").style.justifyContent = "center";
                 }
 
@@ -1617,7 +1622,7 @@
                 nextButton[i].addEventListener('click', () => {
                     nextBtnClick++;
 
-                    if (screenWidth < 640) {
+                    /* if (screenWidth < 640) {
                         if (nextBtnClick >= 8) {
                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
                         }
@@ -1627,7 +1632,7 @@
                         if (nextBtnClick >= 11) {
                             document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
                         }
-                    }
+                    } */
 
                     if (nextBtnClick > 0) {
                         document.getElementById("fc001_prev_btn_wrapper_id").style.visibility = "visible";
