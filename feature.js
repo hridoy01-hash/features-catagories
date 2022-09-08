@@ -388,7 +388,7 @@
                  }
              })(); */
 
-            fc001_cart_icon_wrapper.addEventListener("click", async function () {
+            fc001_cart_icon_wrapper.addEventListener("click", async function (event) {
                 event.stopPropagation();
                 console.log("Cart Clicked");
                 if (document.getElementById(`fc001_cart_icon_wrapper_id_${element._id}`).children[1].classList.contains("fc001_active_icon")) {
@@ -568,20 +568,19 @@
 
         nextButton[i].addEventListener('click', () => {
             nextBtnClick++;
-            if (screenWidth <= 640) {
-                let showProduct = 3;
-                if (nextBtnClick == ((slideProductMaxNumber - showProduct))) {
-                    document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
-                }
-            }
-
-            if (screenWidth => 640 && screenWidth < 900) {
-                let showProduct = 3;
-                if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
-                    document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
-                }
-            }
-
+            /*  if (screenWidth <= 640) {
+                 let showProduct = 3;
+                 if (nextBtnClick == ((slideProductMaxNumber - showProduct))) {
+                     document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
+                 }
+             }
+ 
+             if (screenWidth => 640 && screenWidth < 900) {
+                 let showProduct = 3;
+                 if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
+                     document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
+                 }
+             } */
 
             item.scrollLeft += containerDimensions;
             allProductWrapper[i].style.overflowX = "scroll";
