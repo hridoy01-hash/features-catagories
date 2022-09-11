@@ -568,19 +568,6 @@
 
         nextButton[i].addEventListener('click', () => {
             nextBtnClick++;
-            /*  if (screenWidth <= 640) {
-                 let showProduct = 3;
-                 if (nextBtnClick == ((slideProductMaxNumber - showProduct))) {
-                     document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
-                 }
-             }
- 
-             if (screenWidth => 640 && screenWidth < 900) {
-                 let showProduct = 3;
-                 if (nextBtnClick == (slideProductMaxNumber - showProduct)) {
-                     document.getElementById("fc001_next_btn_wrapper_id").style.visibility = "hidden";
-                 }
-             } */
 
             item.scrollLeft += containerDimensions;
             allProductWrapper[i].style.overflowX = "scroll";
